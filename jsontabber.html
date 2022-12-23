@@ -1,0 +1,75 @@
+<html>
+
+<head>
+    <title>JSON Viewer</title>
+</head>
+
+<body>
+    <h1>JSON Viewer</h1>
+    <p>Enter a JSON file in the textbox below:</p>
+    <textarea id="json-input"></textarea>
+    <button onclick="displayJSON()">Display JSON</button>
+    <div id="json-output"></div>
+    <script>
+        function displayJSON() {
+            // Get the JSON file from the textbox
+            const jsonInput = document.getElementById("json-input").value;
+
+            // Parse the JSON file
+            const jsonData = JSON.parse(jsonInput);
+
+            // Create a container element for the JSON data
+            const jsonContainer = document.createElement("div");
+
+            // Iterate through the keys and values in the JSON data
+            for (const key in jsonData) {
+                // Create a div element for each key-value pair
+                const item = document.createElement("div");
+
+                let value = jsonData[key];
+
+                // Check if the value is an object
+                if (typeof value === "object") {
+                    // If it is, iterate through its keys and values
+                    value = "";
+                    for (const subKey in value) {
+                        value += `${subKey}: ${value[subKey]}, `;
+                    }
+                }
+
+                // Create an input element for the key-value pair
+                const input = document.createElement("input");
+                input.value = value;
+
+                // Set the div element's content to the key and input element
+                const keyInput = document.createElement("input");
+                keyInput.value=key;
+                item.appendChild(keyInput);
+                item.appendChild(input);
+
+                // Add a tabindex attribute to the div element
+                item.setAttribute("tabindex", "0");
+
+                // Add a "keydown" event listener to the input element
+                input.addEventListener("keydown", (event) => {
+                    // Check if the Ctrl+C keyboard combination was pressed
+                    if (event.ctrlKey && event.key === "c") {
+                        // Add the input element's value to the clipboard
+                        event.clipboardData.setData("text/plain", input.value);
+
+                        // Prevent the default copy action
+                        event.preventDefault();
+                    }
+                });
+
+                // Add the div element to the container element
+                jsonContainer.appendChild(item);
+            }
+
+            // Add the container element to the page
+            document.getElementById("json-output").appendChild(jsonContainer);
+        }
+    </script>
+</body>
+
+</html>
